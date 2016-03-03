@@ -1,0 +1,93 @@
+<?php
+use Phalcon\Mvc\Micro;
+
+$app = new Micro();
+
+//Define the routes here
+
+//retrieves all filtered scrumlogs
+$app->get('/api/scrumlog/{personID:[0-9]+}/{date:[0-9]+}/{year:[0-9]+}/{studentID:[0-9]+}/{tableID:[0-9]+}/{cycleID:[0-9]+}',function($personID,$date,$year,$studentID,$tableID ,$cycleID) use ($app){
+    
+    $phql = "SELECT * FROM scrumlog WHERE date = :date: ";
+    
+     if($personID)
+    {
+         $phql .= "AND personID = :personID:";
+    }
+         if($year)
+    {
+         $phql .= "AND year = :year:";
+    }
+         if($studentID)
+    {
+         $phql .= "AND studentID = :studentID:";
+    }
+         if($tableID)
+    {
+         $phql .= "AND tableID = :tableID:";
+    }
+         if($cycleID)
+    {
+         $phql .= "AND cycleID = :cycleID:";
+    }
+    $scrumlog = $app->executeQuery(
+            $phql,
+            array(
+                'date' => $date ,
+                'personID' => $personID ,
+                'year' => $year ,
+                'studentID' => $studentID ,
+                'tableID' => $tableID ,
+                'cycleID' => $cycleID 
+            )
+    );
+    
+    $data = array();
+    foreach ($scrumlog as $scrumlog)
+    {
+        $data[] = array(
+            'date' => $scrumlog->date,
+            'personID' => $scrumlog->persondID,
+            'year' => $scrumlog->year,
+            'studentID' => $scrumlog->studentID,
+            'tableID' => $scrumlog->tableID,
+            'cycleID' => $scrumlog->cycleID 
+        );
+        
+        echo json_encode($data);
+    }
+});
+//retrieve all tables 
+$app->get('/api/table',function(){
+    //stuff
+});
+//retrieves all filtered tables
+$app->get('/api/table/{table}',function(){
+    //stuff 
+});
+//adds new scrumlog
+$app->post('/api/scrumlog',function(){
+    //stuff
+});
+$app->post('/api/cycle',function(){
+    //stuff
+});
+//adjust table seatings
+$app->put('/api/table/{table:[0-9]+}',function(){
+    //stuff
+});
+
+//clear all tables
+$app->put('/api/table',function(){
+   //stuff 
+});
+
+//Log in
+$app-post('/api/login',function(){
+    //stuff
+});
+
+
+$app-handle();
+
+?>
